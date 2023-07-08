@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <title>EV CHARGE</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="book.css">
+
+    <div id="form">
+      <form id="book_charges">
+        <fieldset>
+          <legend>Booking Details</legend>
+
+          <p>
+            <label for="Stations">Stations</label>
+            <select id="Stations" required>
+              <option></option>
+              <option value="Station 1">Station 1</option>
+              <option value="Station 2">Station 2</option>
+              <option value="Station 3">Station 3</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="Charger_name">Charger</label>
+            <select id="Charger_name" name="Charger_name" required autofocus>
+              <option></option>
+              <option value="Charger 1">Charger 1</option>
+              <option value="Charger 2">Charger 2</option>
+              <option value="Charger 3">Charger 3</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="Charger_type">Charger</label>
+            <select id="Charger_type" name="Charger_name" required autofocus>
+              <option></option>
+              <option value="Type 1">Type 1</option>
+              <option value="Type 2">Type 2</option>
+              <option value="Type 3">Type 3</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="date">Date<br/>
+            <input type="date" name="date" id="date" min="today" required />
+          </p>
+
+          <p>
+            <label for="appt">Choose a start time:</label>
+            <input type="time" id="appt" name="appt" min="09:00" max="18:00" required>
+          </p>
+
+          <p>
+            <label for="appt">Choose a end time:</label>
+            <input type="time" id="appt" name="appt" min="09:00" max="18:00" required>
+            <small>Station hours are 5am to 12pm</small>
+          </p>
+
+          <p>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required />
+          </p>
+
+          <p>
+            <label>Total Price</label>
+            <span id="total_price">(enter data first)</span>
+          </p>
+          <div id="submit_wrapper">
+            <input type="submit" id="submit" value="Book charges" />
+          </div>
+        </fieldset>
+      </form>
+      <p id="perchargePrice">Per charge price = &#x20b9; x</p>
+      <p id="discount">
+        <span id="disount_title">Discounts:</span>
+      <ul>
+        <li>5% discount booking is on weekday 12pm-4pm</li>
+        <li>10% discount if number of booked bookings >= 10</li>
+      </ul>
+      </p>
+  </div>
+
+  <fieldset id="Chargers_booked">
+    <legend>Chargers Booked Till Date</legend>
+    <span id="Chargers_list"></span>
+  </fieldset>
+
+  </div>
+
+
+  <script id="worker" type="javascript/worker">
+          self.onmessage = function msgWorkerHandler(event){
+              var jsonString = event.data;
+
+              var day = jsonString.day;
+              var number_booked_bookings = jsonString.number_booked_bookings;
+              var charges_quantity = jsonString.charges_quantity;
+
+              // set price of each charge as Rs. 100
+              var totalPrice = charges_quantity * 100;
+
+              // 5% discount if on weekday
+              if(day > 0 && day < 6){
+                  totalPrice = totalPrice - 0.05 * totalPrice;
+              }
+
+              // 10% discount if number of booked bookings >= 10
+              if(number_booked_bookings >= 10){
+                  totalPrice = totalPrice - 0.10 * totalPrice;
+              }
+
+             	postMessage("&#x20b9; " + totalPrice);
+          }
+  </script>
+
+
+<script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- custom js file link  -->
+<script src="book.js"></script>
+
+</body>
+</html>
